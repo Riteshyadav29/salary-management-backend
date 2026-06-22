@@ -3,8 +3,6 @@ package com.raj.MyApp.Controller;
 import com.raj.MyApp.Model.Salary;
 import com.raj.MyApp.Repository.SalaryRepository;
 import com.raj.MyApp.Specification.SalarySpecification;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/salaries")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
-@Tag(name = "Salary API", description = "Salary Management Operations")
 public class          SalaryController {
 
     private static final Logger logger = LoggerFactory.getLogger(SalaryController.class);
@@ -39,7 +36,6 @@ public class          SalaryController {
     @Autowired
     private SalaryRepository salaryRepository;
 
-    @Operation(summary = "Get salaries with optional search, filters, pagination and sorting")
     @GetMapping
     public ResponseEntity<Page<Salary>> getAllSalaries(
             @RequestParam(required = false) String search,
@@ -69,7 +65,6 @@ public class          SalaryController {
         return ResponseEntity.ok(salaryRepository.findAll(specification, pageable));
     }
 
-    @Operation(summary = "Export salaries as CSV with optional search, filters and sorting")
     @GetMapping(value = "/export", produces = "text/csv")
     public ResponseEntity<byte[]> exportSalariesToCsv(
             @RequestParam(required = false) String search,
@@ -157,7 +152,6 @@ public class          SalaryController {
     }
 
 
-    @Operation(summary = "Get salary by ID")
     @GetMapping("/{id}")
     public ResponseEntity<Salary> getSalaryById(@PathVariable Long id) {
         logger.info("Fetching salary with ID: {}", id);
@@ -175,7 +169,6 @@ public class          SalaryController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Salary not found"));
     }
 
-    @Operation(summary = "Create new salary")
     @PostMapping
     public ResponseEntity<Salary> createSalary(@Valid @RequestBody Salary salary) {
         // If an EMPLOYEE is creating a salary, force the employeeName to their username
@@ -190,7 +183,6 @@ public class          SalaryController {
         return ResponseEntity.ok(saved);
     }
 
-    @Operation(summary = "Update salary by ID")
     @PutMapping("/{id}")
     public ResponseEntity<Salary> updateSalary(@PathVariable Long id, @Valid @RequestBody Salary updatedSalary) {
         return salaryRepository.findById(id).map(existing -> {
@@ -217,7 +209,6 @@ public class          SalaryController {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Salary not found"));
     }
 
-    @Operation(summary = "Partially update salary")
     @PatchMapping("/{id}")
     public ResponseEntity<Salary> partiallyUpdateSalary(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return salaryRepository.findById(id).map(salary -> {
@@ -264,7 +255,6 @@ public class          SalaryController {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Salary not found"));
     }
 
-    @Operation(summary = "Delete salary by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteSalary(@PathVariable Long id) {
         return salaryRepository.findById(id).map(salary -> {
