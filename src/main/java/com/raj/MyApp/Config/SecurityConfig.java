@@ -20,11 +20,20 @@ public class SecurityConfig {
         http
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(java.util.Arrays.asList("http://localhost:4200", "http://localhost:3000"));
-                config.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+
+                config.addAllowedOriginPattern("*");
+                config.setAllowedMethods(java.util.Arrays.asList(
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE",
+                        "PATCH",
+                        "OPTIONS"
+                ));
                 config.setAllowedHeaders(java.util.Arrays.asList("*"));
-                config.setAllowCredentials(true);
+                config.setAllowCredentials(false);
                 config.setMaxAge(3600L);
+
                 return config;
             }))
             .csrf(csrf -> csrf.disable())
@@ -34,7 +43,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .anyRequest().authenticated()
             );
-        
+
         return http.build();
     }
 
